@@ -1,1 +1,6 @@
 *.jpg
+*.png
+*.svg
+/images
+
+*.png
