@@ -28,6 +28,7 @@ go get -u https://github.com/dmartzol/poly.git
 
 ## Usage and examples
 
+### Options
 ```
 Usage: polygonal [OPTIONS] -o output
   -i string
@@ -42,8 +43,9 @@ Usage: polygonal [OPTIONS] -o output
     	resize large input images to this size (default 256)
 ```
 
+To generate an image with 200 polygons and 50k iterations input:
 ```
-poly -i input.png -o output.svg -n 50000
+poly -i input.png -o output.svg -n 50000 -p 200
 ```
 
 
