@@ -53,6 +53,7 @@ poly -i input.png -o output.svg -n 50000 -p 200
 - [ ] Implement save a frame every N iterations.
 - [ ] Refactor.
 - [ ] Add more examples.
+- [ ] Improve this README.
 
 ## License
 
