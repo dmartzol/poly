@@ -51,9 +51,13 @@ poly -i input.png -o output.svg -n 50000 -p 200
 
 ## TO DO
 - [ ] Implement save a frame every N iterations.
-- [ ] Refactor
-
+- [ ] Refactor.
+- [ ] Add more examples.
 
 ## License
 
 This project is licensed under the MIT License
+
+## Examples
+
+![Target](https://github.com/dmartzol/dmartzol.github.io/raw/master/images/win/400poly64000n.png)
