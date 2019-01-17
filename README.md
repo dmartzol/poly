@@ -1,6 +1,6 @@
 # Poly
 
-Go CLI application to optimize the shape of a fixed number of polygons to minimize the difference to a target image using a generative algorithm.
+Go CLI application to optimize the shape of a fixed number of polygons to minimize the difference to a target image using a generative algorithm just for fun.
 
 Project highly inspired in the work of [Michael Fogleman](https://github.com/fogleman/primitive) and [Roger Johansson](https://rogerjohansson.blog/2008/12/07/genetic-programming-evolution-of-mona-lisa/) but using a different approach and getting different results.
 
