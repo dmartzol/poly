@@ -5,10 +5,11 @@ Go CLI application to optimize the shape of a fixed number of polygons to minimi
 Project highly inspired in the work of [Michael Fogleman](https://github.com/fogleman/primitive) and [Roger Johansson](https://rogerjohansson.blog/2008/12/07/genetic-programming-evolution-of-mona-lisa/) but using a different approach and getting different results.
 
 ### Target image
-![Example](https://github.com/dmartzol/dmartzol.github.io/raw/master/images/strawberry/strawberry.png)
+![Target](https://github.com/dmartzol/dmartzol.github.io/raw/master/images/strawberry/strawberry.png =250x)
 
 ### Result
-![Result](https://github.com/dmartzol/dmartzol.github.io/raw/master/images/strawberry/p200-n80000.png)
+![Result](https://github.com/dmartzol/dmartzol.github.io/raw/master/images/strawberry/p200-n80000.png =250x)
+
 
 ## Features
 
