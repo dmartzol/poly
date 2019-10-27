@@ -24,9 +24,9 @@ var (
 	InputSize int
 )
 
-// TODO: dani
-
 type flagArray []string
+
+// TODO: dani
 
 func (i *flagArray) String() string {
 	return strings.Join(*i, ", ")
