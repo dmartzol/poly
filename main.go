@@ -22,8 +22,9 @@ var (
 	Pols      int
 	Iter      int
 	InputSize int
-	// TODO: dani
 )
+
+// TODO: dani
 
 type flagArray []string
 
