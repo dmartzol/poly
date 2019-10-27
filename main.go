@@ -24,6 +24,7 @@ var (
 	InputSize int
 )
 
+// TODO: dani
 type flagArray []string
 
 func (i *flagArray) String() string {
