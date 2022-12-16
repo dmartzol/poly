@@ -21,7 +21,7 @@ var (
 	Outputs      flagArray
 	polygonCount int
 	iterations   int
-	maxSize      int
+	maxImageSize int
 )
 
 type flagArray []string
@@ -40,7 +40,7 @@ func init() {
 	flag.Var(&Outputs, "o", "output image path")
 	flag.IntVar(&polygonCount, "p", 50, "number of polygons")
 	flag.IntVar(&iterations, "n", 1000, "number of iterations")
-	flag.IntVar(&maxSize, "r", 256, "resize large input images to this size")
+	flag.IntVar(&maxImageSize, "r", 256, "resize large input images to this size")
 }
 
 func main() {
@@ -72,7 +72,7 @@ func main() {
 	}
 
 	// scale down input image if needed
-	size := uint(maxSize)
+	size := uint(maxImageSize)
 	if size > 0 {
 		inputImage = resize.Thumbnail(size, size, inputImage, resize.Bilinear)
 	}
