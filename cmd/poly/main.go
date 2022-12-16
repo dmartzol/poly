@@ -46,6 +46,7 @@ func init() {
 
 func main() {
 	flag.Parse()
+	// flag validation
 	errorString := ""
 	if len(inputPath) == 0 {
 		errorString = "input argument required"
