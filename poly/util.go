@@ -1,6 +1,7 @@
 package poly
 
 import (
+	"flag"
 	"fmt"
 	"image"
 	"log"
@@ -10,6 +11,13 @@ import (
 	_ "image/jpeg"
 	"os"
 )
+
+func PrintDefaultsWithError(errorMessage string) {
+	log.Printf("invalid input parameters: %v", errorMessage)
+	fmt.Println("Usage: poly [OPTIONS] -o output")
+	flag.PrintDefaults()
+	os.Exit(1)
+}
 
 func LoadImage(path string) (image.Image, error) {
 	file, err := os.Open(path)
@@ -36,11 +44,6 @@ func CopyRGBA(source *image.RGBA) *image.RGBA {
 	return copy
 }
 
-func RaiseError(message string) bool {
-	fmt.Fprintln(os.Stderr, message)
-	return false
-}
-
 func CheckError(err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -48,9 +51,6 @@ func CheckError(err error) {
 }
 
 func MinMax(values []int) (int, int) {
-	if len(values) == 0 {
-		RaiseError("ERROR: empty slice")
-	}
 	min, max := values[0], values[0]
 	for i := 0; i < len(values); i++ {
 		if values[i] > max {
@@ -63,10 +63,8 @@ func MinMax(values []int) (int, int) {
 	return min, max
 }
 
+// MinMaxPoints panics if length of the input array is 0
 func MinMaxPoints(points []Point) (int, int, int, int) {
-	if len(points) == 0 {
-		RaiseError("ERROR: empty slice")
-	}
 	xmin, xmax, ymin, ymax := points[0].X, points[0].X, points[0].Y, points[0].Y
 	for _, point := range points {
 		if point.X > xmax {

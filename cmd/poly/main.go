@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"os"
 	"strings"
 	"time"
 
@@ -47,34 +46,30 @@ func init() {
 func main() {
 	flag.Parse()
 	// flag validation
-	errorString := ""
 	if len(inputPath) == 0 {
-		errorString = "input argument required"
+		poly.PrintDefaultsWithError("input argument required")
 	}
 	if len(Outputs) == 0 {
-		errorString = "output argument required"
-	}
-	if polygonCount <= 0 {
-		errorString = "number of polygons should be > 0"
-	}
-	if iterations <= 0 {
-		errorString = "number of iterations should be > 0"
+		poly.PrintDefaultsWithError("output argument required")
 	}
 	if Outputs[0] == inputPath {
-		errorString = "input and output are the same file"
+		poly.PrintDefaultsWithError("input and output are the same file")
 	}
-	if errorString != "" {
-		log.Printf(errorString)
-		fmt.Println("Usage: poly [OPTIONS] -o output")
-		flag.PrintDefaults()
-		os.Exit(1)
+	if polygonCount <= 0 {
+		poly.PrintDefaultsWithError("number of polygons should be > 0")
+	}
+	if iterations <= 0 {
+		poly.PrintDefaultsWithError("number of iterations should be > 0")
 	}
 
 	// Seed random number generator
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	inputImage, err := poly.LoadImage(inputPath)
-	poly.CheckError(err)
+	if err != nil {
+		log.Printf("unable to load image: %v", err)
+		return
+	}
 
 	// scale down input image if needed
 	size := uint(maxSize)
