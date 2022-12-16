@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"log"
+
 	// Decoding jpg images
 	"image/draw"
 	_ "image/jpeg"
@@ -40,7 +41,7 @@ func RaiseError(message string) bool {
 	return false
 }
 
-func Check(err error) {
+func CheckError(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}

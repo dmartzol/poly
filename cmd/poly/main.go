@@ -17,11 +17,11 @@ import (
 )
 
 var (
-	Input     string
-	Outputs   flagArray
-	Pols      int
-	Iter      int
-	InputSize int
+	inputPath    string
+	Outputs      flagArray
+	polygonCount int
+	iterations   int
+	maxSize      int
 )
 
 type flagArray []string
@@ -36,26 +36,26 @@ func (i *flagArray) Set(value string) error {
 }
 
 func init() {
-	flag.StringVar(&Input, "i", "", "input image path")
+	flag.StringVar(&inputPath, "i", "", "input image path")
 	flag.Var(&Outputs, "o", "output image path")
-	flag.IntVar(&Pols, "p", 50, "number of polygons")
-	flag.IntVar(&Iter, "n", 1000, "number of iterations")
-	flag.IntVar(&InputSize, "r", 256, "resize large input images to this size")
+	flag.IntVar(&polygonCount, "p", 50, "number of polygons")
+	flag.IntVar(&iterations, "n", 1000, "number of iterations")
+	flag.IntVar(&maxSize, "r", 256, "resize large input images to this size")
 }
 
 func main() {
 	flag.Parse()
 	ok := true
-	if len(Input) == 0 {
+	if len(inputPath) == 0 {
 		ok = poly.RaiseError("ERROR: input argument required")
 	}
 	if len(Outputs) == 0 {
 		ok = poly.RaiseError("ERROR: output argument required")
 	}
-	if Pols <= 0 {
+	if polygonCount <= 0 {
 		ok = poly.RaiseError("ERROR: number of polygons should be > 0")
 	}
-	if Iter <= 0 {
+	if iterations <= 0 {
 		ok = poly.RaiseError("ERROR: number of iterations should be > 0")
 	}
 	if !ok {
@@ -63,49 +63,50 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	if Outputs[0] == Input {
+	if Outputs[0] == inputPath {
 		ok = poly.RaiseError("ERROR: input and output are the same file")
 	}
 
 	// Seed random number generator
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	input, err := poly.LoadImage(Input)
-	poly.Check(err)
+	inputImage, err := poly.LoadImage(inputPath)
+	poly.CheckError(err)
 
 	// scale down input image if needed
-	size := uint(InputSize)
+	size := uint(maxSize)
 	if size > 0 {
-		input = resize.Thumbnail(size, size, input, resize.Bilinear)
+		inputImage = resize.Thumbnail(size, size, inputImage, resize.Bilinear)
 	}
 
 	// Main block
-	model := poly.NewModel(input, Pols)
+	model := poly.NewModel(inputImage, polygonCount)
 	fmt.Println(time.Now())
 	start := time.Now()
-	ratioMutations := model.Optimize(Iter)
+	ratioMutations := model.Optimize(iterations)
 	elapsed := time.Since(start)
-	fmt.Printf("Mutations: %d\n", Iter)
+	fmt.Printf("Mutations: %d\n", iterations)
 	fmt.Printf("Took %d minutes\n", int(elapsed.Minutes()))
-	speed := int(float64(Iter) * float64(Pols) / elapsed.Seconds())
+	speed := int(float64(iterations) * float64(polygonCount) / elapsed.Seconds())
 	fmt.Println(speed, "polygons/s")
 	fmt.Println(ratioMutations)
 	fmt.Println("-------------------")
 
+	// saving output
 	for _, output := range Outputs {
 		path := output
 		extension := strings.ToLower(filepath.Ext(output))
 		switch extension {
 		default:
-			poly.Check(fmt.Errorf("unrecognized file extension: %s", extension))
+			poly.CheckError(fmt.Errorf("unrecognized file extension: %s", extension))
 		case ".svg":
-			poly.Check(poly.SaveFile(path, model.SVG()))
+			poly.CheckError(poly.SaveFile(path, model.SVG()))
 			app := "inkscape"
 			arg0 := output
 			arg1 := "--export-png=F.png"
 			cmd := exec.Command(app, arg0, arg1)
 			_, err := cmd.Output()
-			poly.Check(err)
+			poly.CheckError(err)
 			// print(string(stdout))
 		case ".png":
 			model.PNG(output)
