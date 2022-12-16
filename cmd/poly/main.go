@@ -86,6 +86,7 @@ func main() {
 	ratioMutations := model.Optimize(iterations)
 	elapsed := time.Since(start)
 
+	// logging info
 	fmt.Printf("Mutations: %d\n", iterations)
 	fmt.Printf("took %v\n", elapsed)
 	speed := int(float64(iterations) * float64(polygonCount) / elapsed.Seconds())
