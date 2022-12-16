@@ -74,8 +74,14 @@ func main() {
 	}
 
 	// Main block
+	whiteColor := poly.Color{
+		R: 255,
+		G: 255,
+		B: 255,
+		A: 255,
+	}
 	randomSeed := time.Now().UTC().UnixNano()
-	model := poly.NewModel(inputImage, polygonCount, randomSeed)
+	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 	start := time.Now()
 	ratioMutations := model.Optimize(iterations)
 	elapsed := time.Since(start)

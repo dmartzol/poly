@@ -16,21 +16,22 @@ type Model struct {
 	Scale         float64
 }
 
-func NewModel(input image.Image, numPolygons int, seed int64) *Model {
+func NewModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Model {
 	rand.Seed(seed)
 	bounds := input.Bounds()
 	w := bounds.Max.X
 	h := bounds.Max.Y
-	model := &Model{}
-	model.Width = w
-	model.Height = h
-	model.Scale = 1.0
-	model.Target = imageToRGBA(input)
-	model.NumPolygons = numPolygons
-	// TODO: Get black or white depending on the average color of the target
-	bgColor := Color{255, 255, 255, 255}
+	model := Model{
+		Width:       w,
+		Height:      h,
+		Scale:       1.0,
+		Target:      imageToRGBA(input),
+		NumPolygons: numPolygons,
+	}
+
 	model.Current = NewIndividual(model.Target, model.NumPolygons, bgColor)
-	return model
+
+	return &model
 }
 
 func (model *Model) Optimize(n int) []float64 {
