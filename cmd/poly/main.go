@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"strings"
@@ -45,26 +46,27 @@ func init() {
 
 func main() {
 	flag.Parse()
-	ok := true
+	errorString := ""
 	if len(inputPath) == 0 {
-		ok = poly.RaiseError("ERROR: input argument required")
+		errorString = "input argument required"
 	}
 	if len(Outputs) == 0 {
-		ok = poly.RaiseError("ERROR: output argument required")
+		errorString = "output argument required"
 	}
 	if polygonCount <= 0 {
-		ok = poly.RaiseError("ERROR: number of polygons should be > 0")
+		errorString = "number of polygons should be > 0"
 	}
 	if iterations <= 0 {
-		ok = poly.RaiseError("ERROR: number of iterations should be > 0")
+		errorString = "number of iterations should be > 0"
 	}
-	if !ok {
+	if Outputs[0] == inputPath {
+		errorString = "input and output are the same file"
+	}
+	if errorString != "" {
+		log.Printf(errorString)
 		fmt.Println("Usage: poly [OPTIONS] -o output")
 		flag.PrintDefaults()
 		os.Exit(1)
-	}
-	if Outputs[0] == inputPath {
-		ok = poly.RaiseError("ERROR: input and output are the same file")
 	}
 
 	// Seed random number generator
