@@ -3,6 +3,7 @@ package poly
 import (
 	"fmt"
 	"image"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -15,7 +16,8 @@ type Model struct {
 	Scale         float64
 }
 
-func NewModel(input image.Image, numPolygons int) *Model {
+func NewModel(input image.Image, numPolygons int, seed int64) *Model {
+	rand.Seed(seed)
 	bounds := input.Bounds()
 	w := bounds.Max.X
 	h := bounds.Max.Y

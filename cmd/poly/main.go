@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"strings"
 	"time"
 
@@ -62,9 +61,6 @@ func main() {
 		poly.PrintDefaultsWithError("number of iterations should be > 0")
 	}
 
-	// Seed random number generator
-	rand.Seed(time.Now().UTC().UnixNano())
-
 	inputImage, err := poly.LoadImage(inputPath)
 	if err != nil {
 		log.Printf("unable to load image: %v", err)
@@ -78,7 +74,8 @@ func main() {
 	}
 
 	// Main block
-	model := poly.NewModel(inputImage, polygonCount)
+	randomSeed := time.Now().UTC().UnixNano()
+	model := poly.NewModel(inputImage, polygonCount, randomSeed)
 	start := time.Now()
 	ratioMutations := model.Optimize(iterations)
 	elapsed := time.Since(start)
