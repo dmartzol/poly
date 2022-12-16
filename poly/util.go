@@ -47,22 +47,6 @@ func CheckError(err error) {
 	}
 }
 
-func MinMax(values []int) (int, int) {
-	if len(values) == 0 {
-		RaiseError("ERROR: empty slice")
-	}
-	min, max := values[0], values[0]
-	for i := 0; i < len(values); i++ {
-		if values[i] > max {
-			max = values[i]
-		}
-		if values[i] < min {
-			min = values[i]
-		}
-	}
-	return min, max
-}
-
 func MinMaxPoints(points []Point) (int, int, int, int) {
 	if len(points) == 0 {
 		RaiseError("ERROR: empty slice")
