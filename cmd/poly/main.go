@@ -59,7 +59,7 @@ func main() {
 		ok = poly.RaiseError("ERROR: number of iterations should be > 0")
 	}
 	if !ok {
-		fmt.Println("Usage: polygonal [OPTIONS] -o output")
+		fmt.Println("Usage: poly [OPTIONS] -o output")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
