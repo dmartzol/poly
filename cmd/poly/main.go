@@ -84,7 +84,7 @@ func main() {
 	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 
 	start := time.Now()
-	ratioMutations := model.Optimize(iterations)
+	scores := model.Optimize(iterations)
 	elapsed := time.Since(start)
 
 	// logging info
@@ -92,7 +92,7 @@ func main() {
 	fmt.Printf("took %v\n", elapsed)
 	speed := int(float64(iterations) * float64(polygonCount) / elapsed.Seconds())
 	fmt.Println(speed, "polygons/s")
-	fmt.Println(ratioMutations)
+	fmt.Println(scores)
 	fmt.Println("-------------------")
 
 	// saving output

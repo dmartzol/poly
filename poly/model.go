@@ -55,7 +55,8 @@ func (m *Model) Optimize(iterations int) []float64 {
 		polygons := make(Polygons, m.NumPolygons)
 		copy(polygons, m.Polygons)
 		randomIndex := rand.Intn(m.NumPolygons)
-		polygons[randomIndex].mutate(0.15, m.Width, m.Height)
+		r := rand.Float64()
+		polygons[randomIndex].mutate(r, m.Width, m.Height)
 		rgbaCandidate := polygonsToRGBA(polygons, m.BackgroundColor, m.Width, m.Height)
 
 		newScore := MSE(m.TargetImage, rgbaCandidate)
@@ -118,7 +119,7 @@ func (m *Model) SVG() string {
 	lines = append(lines, fmt.Sprintf("<rect x=\"0\" y=\"0\" width=\"%d\" height=\"%d\" fill=\"#%02x%02x%02x\" />", 2*m.Width, 2*m.Height, bg.R, bg.G, bg.B))
 	lines = append(lines, fmt.Sprintf("<g transform=\"scale(%f) translate(0.5 0.5)\">", 2*m.Scale))
 	for _, polygon := range m.Polygons {
-		color := polygon.ColorRGBA
+		color := polygon.Color
 		attrs := "<polygon fill=\"#%02x%02x%02x\" fill-opacity=\"%f\""
 		attrs = fmt.Sprintf(attrs, color.R, color.G, color.B, float64(color.A)/255)
 		p := " points=\""

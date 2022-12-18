@@ -1,68 +1,37 @@
 package poly
 
 import (
-	"image"
 	"math/rand"
 )
 
 type Polygon struct {
 	// Order represents the number of vertices in the polygon
-	Order     int
-	ColorRGBA Color
+	Color Color
 	// Vertices represents the list of coordinates for the vertices of the polygon
-	Vertices []Point
-	// Rectangle represents the minimum rectangle that contains the polygon
-	Rectangle  image.Rectangle
-	subImage   *image.RGBA
-	IsModified bool
-	Points     []Point
-	HasPoints  bool
+	Vertices  []Point
+	Points    []Point
+	HasPoints bool
 }
 
 type Polygons []Polygon
 
-func (ps Polygons) MSE() float64 {
-	return 0.0
-}
-
-func (polygon *Polygon) clone() Polygon {
-	polygonCopied := &Polygon{}
-	polygonCopied.Order = polygon.Order
-	polygonCopied.ColorRGBA = polygon.ColorRGBA
-	polygonCopied.Vertices = make([]Point, polygon.Order)
-	for i := range polygon.Vertices {
-		polygonCopied.Vertices[i] = polygon.Vertices[i].clone()
-	}
-	polygonCopied.Rectangle = polygon.Rectangle
-	polygonCopied.subImage = image.NewRGBA(polygon.subImage.Bounds())
-	copy(polygonCopied.subImage.Pix, polygon.subImage.Pix)
-	polygonCopied.HasPoints = polygon.HasPoints
-	return *polygonCopied
-}
-
 func NewRandomPolygon(order, maxX, maxY int) Polygon {
 	points := newRandomVertices(order, maxX, maxY)
-	x0, x1, y0, y1 := MinMaxPoints(points)
 	polygon := Polygon{}
-	polygon.Order = order
 	polygon.Vertices = points
-	polygon.Rectangle = image.Rect(x0, y0, x1, y1)
-	polygon.ColorRGBA = newRandomColor()
-	polygon.subImage = image.NewRGBA(image.Rect(0, 0, maxX, maxY))
+	polygon.Color = newRandomColor()
 	polygon.HasPoints = false
 	return polygon
 }
 
 func (polygon *Polygon) mutate(ratio float64, w, h int) {
-	// mutates vertices half of the times
 	randomFloat := rand.Float64()
 	if randomFloat > 0.5 {
-		polygon.HasPoints = false
 		polygon.mutateVertex(ratio, w, h)
-		return
+	} else {
+		polygon.mutateColor()
 	}
 
-	polygon.mutateColor()
 	return
 }
 
@@ -71,13 +40,13 @@ func (polygon *Polygon) mutateColor() {
 	channel := rand.Intn(4)
 	displacement := rand.Intn(2*amplitude) - amplitude
 	colorList := [4]uint8{
-		polygon.ColorRGBA.R,
-		polygon.ColorRGBA.G,
-		polygon.ColorRGBA.B,
-		polygon.ColorRGBA.A,
+		polygon.Color.R,
+		polygon.Color.G,
+		polygon.Color.B,
+		polygon.Color.A,
 	}
 	colorList[channel] = clamp(int(colorList[channel]), displacement, 0, 255)
-	polygon.ColorRGBA =
+	polygon.Color =
 		Color{
 			colorList[0],
 			colorList[1],
@@ -87,6 +56,7 @@ func (polygon *Polygon) mutateColor() {
 }
 
 func (polygon *Polygon) mutateVertex(ratio float64, width, height int) {
+	polygon.HasPoints = false
 	randomVertexIndex := rand.Intn(len(polygon.Vertices))
 
 	var p [2]int
