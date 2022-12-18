@@ -81,7 +81,7 @@ func main() {
 		A: 255,
 	}
 	randomSeed := time.Now().UTC().UnixNano()
-	model := poly.NewAdvancedModel(inputImage, polygonCount, randomSeed, whiteColor)
+	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 
 	start := time.Now()
 	ratioMutations := model.Optimize(iterations)

@@ -22,7 +22,7 @@ type Model struct {
 	MutateVertexProbability float64
 }
 
-func NewAdvancedModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Model {
+func NewModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Model {
 	rand.Seed(seed)
 	bounds := input.Bounds()
 	w := bounds.Max.X
