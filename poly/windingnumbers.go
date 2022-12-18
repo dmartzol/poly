@@ -112,22 +112,6 @@ func SubtractPolygonWWN(polygon *Polygon, result *image.RGBA) {
 	}
 }
 
-func RasterizeGroup(individual *Individual, canvas *image.RGBA) {
-	width := canvas.Bounds().Max.X
-	height := canvas.Bounds().Max.Y
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			for i := range individual.Polygons {
-				if (Point{x, y}).In(individual.Polygons[i].Rectangle) {
-					if WindingNumber(Point{x, y}, individual.Polygons[i].Vertices) != 0 {
-						DrawPoint(x, y, individual.Polygons[i].ColorRGBA, canvas)
-					}
-				}
-			}
-		}
-	}
-}
-
 // In reports whether p is in r.
 func (p Point) In(r image.Rectangle) bool {
 	return r.Min.X <= p.X && p.X < r.Max.X && r.Min.Y <= p.Y && p.Y < r.Max.Y
