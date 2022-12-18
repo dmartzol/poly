@@ -81,9 +81,10 @@ func main() {
 		A: 255,
 	}
 	randomSeed := time.Now().UTC().UnixNano()
-	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
+	advancedModel := poly.NewAdvancedModel(inputImage, polygonCount, randomSeed, whiteColor)
+
 	start := time.Now()
-	ratioMutations := model.Optimize(iterations)
+	ratioMutations := advancedModel.Optimize(iterations)
 	elapsed := time.Since(start)
 
 	// logging info
@@ -102,7 +103,7 @@ func main() {
 		default:
 			poly.CheckError(fmt.Errorf("unrecognized file extension: %s", extension))
 		case ".svg":
-			poly.CheckError(poly.SaveFile(path, model.SVG()))
+			poly.CheckError(poly.SaveFile(path, advancedModel.SVG()))
 			app := "inkscape"
 			arg0 := output
 			arg1 := "--export-png=F.png"
@@ -111,7 +112,7 @@ func main() {
 			poly.CheckError(err)
 			// print(string(stdout))
 		case ".png":
-			model.PNG(output)
+			advancedModel.PNG(output)
 		}
 	}
 }

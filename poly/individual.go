@@ -128,3 +128,38 @@ func backgroundColor(c Color, canvas *image.RGBA) {
 		canvas.Pix[i+3] = c.A
 	}
 }
+
+type AdvancedIndividual struct {
+	Width, Height   int
+	RGBA            *image.RGBA
+	Polygons        Polygons
+	BackgroundColor Color
+	score           float64
+}
+
+func (i *AdvancedIndividual) clone() *AdvancedIndividual {
+	var poligons Polygons
+	for _, polygon := range i.Polygons {
+		poligons = append(poligons, polygon.clone())
+	}
+
+	n := AdvancedIndividual{
+		Width:           i.Width,
+		Height:          i.Height,
+		RGBA:            i.RGBA,
+		BackgroundColor: i.BackgroundColor,
+		Polygons:        poligons,
+	}
+
+	return &n
+}
+
+func (i *AdvancedIndividual) mutate(ratio float64) *AdvancedIndividual {
+	newInd := i.clone()
+
+	// Select a random polygon
+	choosenPolygonIndex := rand.Intn(len(i.Polygons))
+	newInd.Polygons[choosenPolygonIndex].mutate(ratio, i.Width, i.Height)
+
+	return newInd
+}

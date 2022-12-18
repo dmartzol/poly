@@ -19,6 +19,12 @@ type Polygon struct {
 	HasPoints  bool
 }
 
+type Polygons []Polygon
+
+func (ps Polygons) MSE() float64 {
+	return 0.0
+}
+
 func (polygon *Polygon) clone() Polygon {
 	polygonCopied := &Polygon{}
 	polygonCopied.Order = polygon.Order
@@ -48,12 +54,14 @@ func NewRandomPolygon(order, maxX, maxY int) Polygon {
 }
 
 func (polygon *Polygon) mutate(ratio float64, w, h int) {
+	// mutates vertices half of the times
 	randomFloat := rand.Float64()
 	if randomFloat > 0.5 {
 		polygon.HasPoints = false
 		polygon.mutateVertex(ratio, w, h)
 		return
 	}
+
 	polygon.mutateColor()
 	return
 }
@@ -79,12 +87,13 @@ func (polygon *Polygon) mutateColor() {
 }
 
 func (polygon *Polygon) mutateVertex(ratio float64, width, height int) {
-	randomVertex := rand.Intn(len(polygon.Vertices))
+	randomVertexIndex := rand.Intn(len(polygon.Vertices))
+
 	var p [2]int
 	if ratio < 0.07 {
 		p = [2]int{
-			polygon.Vertices[randomVertex].X,
-			polygon.Vertices[randomVertex].Y,
+			polygon.Vertices[randomVertexIndex].X,
+			polygon.Vertices[randomVertexIndex].Y,
 		}
 		amplitude := 10
 		displacement := rand.Intn(2*amplitude+1) - amplitude
@@ -94,8 +103,9 @@ func (polygon *Polygon) mutateVertex(ratio float64, width, height int) {
 	} else {
 		p = [2]int{rand.Intn(width), rand.Intn(height)}
 	}
-	polygon.Vertices[randomVertex] = Point{p[0], p[1]}
+	polygon.Vertices[randomVertexIndex] = Point{p[0], p[1]}
 }
+
 func newRandomColor() Color {
 	var color [4]uint8
 	for i := 0; i < 3; i++ {
