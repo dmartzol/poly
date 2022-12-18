@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type AdvancedModel struct {
+type Model struct {
 	Width, Height           int
 	TargetImage             *image.RGBA
 	NumPolygons             int
@@ -22,12 +22,12 @@ type AdvancedModel struct {
 	MutateVertexProbability float64
 }
 
-func NewAdvancedModel(input image.Image, numPolygons int, seed int64, bgColor Color) *AdvancedModel {
+func NewAdvancedModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Model {
 	rand.Seed(seed)
 	bounds := input.Bounds()
 	w := bounds.Max.X
 	h := bounds.Max.Y
-	m := AdvancedModel{
+	m := Model{
 		Width:           w,
 		Height:          h,
 		Scale:           1.0,
@@ -48,7 +48,7 @@ func NewAdvancedModel(input image.Image, numPolygons int, seed int64, bgColor Co
 	return &m
 }
 
-func (m *AdvancedModel) Optimize(iterations int) []float64 {
+func (m *Model) Optimize(iterations int) []float64 {
 	var scores []float64
 
 	for i := 0; i < iterations; i++ {
@@ -111,7 +111,7 @@ func MSE(target, candidate *image.RGBA) float64 {
 	return math.Sqrt(float64(sum))
 }
 
-func (m *AdvancedModel) SVG() string {
+func (m *Model) SVG() string {
 	bg := m.BackgroundColor
 	var lines []string
 	lines = append(lines, fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">", 2*m.Width, 2*m.Height))
@@ -134,7 +134,7 @@ func (m *AdvancedModel) SVG() string {
 	return strings.Join(lines, "\n")
 }
 
-func (m *AdvancedModel) PNG(fname string) error {
+func (m *Model) PNG(fname string) error {
 	file, err := os.Create(fname)
 	if err != nil {
 		return fmt.Errorf("unable to create file: %w", err)
