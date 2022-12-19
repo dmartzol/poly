@@ -1,5 +1,7 @@
 package poly
 
+import "math/rand"
+
 type Color struct {
 	R, G, B, A uint8
 }
@@ -24,4 +26,17 @@ func subtractColors(c, background Color) Color {
 	old[2] = (256*uint16(background.B) - alpha*uint16(c.B)) / inverseAlpha
 	old[3] = 0xff
 	return Color{uint8(old[0]), uint8(old[1]), uint8(old[2]), uint8(old[3])}
+}
+
+func NewRandomColor() Color {
+	num0 := uint8(rand.Intn(256))
+	num1 := uint8(rand.Intn(256))
+	num2 := uint8(rand.Intn(256))
+	num3 := uint8(rand.Intn(256))
+	return Color{
+		R: num0,
+		G: num1,
+		B: num2,
+		A: num3,
+	}
 }

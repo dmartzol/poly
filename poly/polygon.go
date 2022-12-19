@@ -29,7 +29,8 @@ func (polygon *Polygon) mutate(ratio float64, w, h int) {
 	if randomFloat > 0.5 {
 		polygon.mutateVertex(ratio, w, h)
 	} else {
-		polygon.mutateColor()
+		polygon.Color = NewRandomColor()
+		//polygon.mutateColor()
 	}
 
 	return
@@ -38,6 +39,7 @@ func (polygon *Polygon) mutate(ratio float64, w, h int) {
 func (polygon *Polygon) mutateColor() {
 	amplitude := 50
 	channel := rand.Intn(4)
+	// displacement is an integer in the interval [-50, 100)
 	displacement := rand.Intn(2*amplitude) - amplitude
 	colorList := [4]uint8{
 		polygon.Color.R,
