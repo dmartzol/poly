@@ -74,7 +74,14 @@ func BenchmarkModel(b *testing.B) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	model := NewModel(img, 25)
+	whiteColor := Color{
+		R: 255,
+		G: 255,
+		B: 255,
+		A: 255,
+	}
+	randomSeed := int64(349283)
+	model := NewModel(img, 25, randomSeed, whiteColor)
 	for n := 0; n < b.N; n++ {
 		_ = model.Optimize(5)
 	}
