@@ -48,10 +48,9 @@ To generate an image with 200 polygons and 50k iterations input:
 poly -i input.png -o output.svg -n 50000 -p 200
 ```
 
-
 ## TO DO
+- [ ] Concurrency
 - [ ] Implement save a frame every N iterations.
-- [ ] Refactor.
 - [ ] Add more examples.
 - [ ] Improve this README.
 
