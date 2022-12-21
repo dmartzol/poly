@@ -3,7 +3,6 @@ package poly
 import (
 	"encoding/base64"
 	"image"
-	"log"
 	"strings"
 	"testing"
 )
@@ -72,7 +71,8 @@ func BenchmarkModel(b *testing.B) {
 	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(data))
 	img, _, err := image.Decode(reader)
 	if err != nil {
-		log.Fatal(err)
+		b.Errorf("unable to decode: %v", err)
+		return
 	}
 	whiteColor := Color{
 		R: 255,
