@@ -5,7 +5,6 @@ import (
 )
 
 type Polygon struct {
-	// Order represents the number of vertices in the polygon
 	Color Color
 	// Vertices represents the list of coordinates for the vertices of the polygon
 	Vertices  []Point
@@ -13,7 +12,27 @@ type Polygon struct {
 	HasPoints bool
 }
 
+func (p Polygon) Clone() Polygon {
+	var polygon Polygon
+	polygon.Vertices = make([]Point, len(p.Vertices))
+	polygon.Points = make([]Point, len(p.Points))
+	copy(polygon.Vertices, p.Vertices)
+	copy(polygon.Points, p.Points)
+	polygon.HasPoints = p.HasPoints
+	polygon.Color = p.Color
+	return polygon
+}
+
 type Polygons []Polygon
+
+func (ps Polygons) Clone() Polygons {
+	var polygons Polygons
+	for _, p := range ps {
+		c := p.Clone()
+		polygons = append(polygons, c)
+	}
+	return polygons
+}
 
 func NewRandomPolygon(order, maxX, maxY int) Polygon {
 	points := newRandomVertices(order, maxX, maxY)

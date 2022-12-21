@@ -52,8 +52,7 @@ func (m *Model) Optimize(iterations int) []float64 {
 	var scores []float64
 
 	for i := 0; i < iterations; i++ {
-		polygons := make(Polygons, m.NumPolygons)
-		copy(polygons, m.Polygons)
+		polygons := m.Polygons.Clone()
 		randomIndex := rand.Intn(m.NumPolygons)
 		r := rand.Float64()
 		polygons[randomIndex].mutate(r, m.Width, m.Height)
