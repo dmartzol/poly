@@ -9,8 +9,6 @@ import (
 
 	"path/filepath"
 
-	"os/exec"
-
 	"github.com/dmartzol/poly/poly"
 	"github.com/nfnt/resize"
 )
@@ -83,7 +81,7 @@ func main() {
 	randomSeed := time.Now().UTC().UnixNano()
 	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 	start := time.Now()
-	ratioMutations := model.Optimize(iterations)
+	scores := model.Optimize(iterations)
 	elapsed := time.Since(start)
 
 	// logging info
@@ -91,8 +89,7 @@ func main() {
 	fmt.Printf("took %v\n", elapsed)
 	speed := int(float64(iterations) * float64(polygonCount) / elapsed.Seconds())
 	fmt.Println(speed, "polygons/s")
-	fmt.Println(ratioMutations)
-	fmt.Println("-------------------")
+	fmt.Printf("score: %v", scores[len(scores)-1])
 
 	// saving output
 	for _, output := range Outputs {
@@ -100,18 +97,20 @@ func main() {
 		extension := strings.ToLower(filepath.Ext(output))
 		switch extension {
 		default:
-			poly.CheckError(fmt.Errorf("unrecognized file extension: %s", extension))
+			log.Printf("unrecognized file extension: %s", extension)
+			return
 		case ".svg":
-			poly.CheckError(poly.SaveFile(path, model.SVG()))
-			app := "inkscape"
-			arg0 := output
-			arg1 := "--export-png=F.png"
-			cmd := exec.Command(app, arg0, arg1)
-			_, err := cmd.Output()
-			poly.CheckError(err)
-			// print(string(stdout))
+			err = poly.SaveFile(path, model.SVG())
+			if err != nil {
+				log.Printf("unable to save SVG file: %v", err)
+				return
+			}
 		case ".png":
-			model.PNG(output)
+			err = model.PNG(output)
+			if err != nil {
+				log.Printf("unable to save PNG file: %v", err)
+				return
+			}
 		}
 	}
 }

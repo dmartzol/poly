@@ -44,12 +44,6 @@ func CopyRGBA(source *image.RGBA) *image.RGBA {
 	return copy
 }
 
-func CheckError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func MinMax(values []int) (int, int) {
 	min, max := values[0], values[0]
 	for i := 0; i < len(values); i++ {

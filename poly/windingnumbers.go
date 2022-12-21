@@ -84,14 +84,14 @@ func RasterizePolygonWWN(polygon Polygon, result *image.RGBA) {
 	// copy(polygon.subImage.Pix, result.Pix)
 	if polygon.HasPoints {
 		for _, point := range polygon.Points {
-			DrawPoint(point.X, point.Y, polygon.ColorRGBA, result)
+			DrawPoint(point.X, point.Y, polygon.Color, result)
 		}
 	} else {
 		polygon.HasPoints = true
 		for x := minX; x <= maxX; x++ {
 			for y := minY; y <= maxY; y++ {
 				if WindingNumber(Point{x, y}, polygon.Vertices) != 0 {
-					DrawPoint(x, y, polygon.ColorRGBA, result)
+					DrawPoint(x, y, polygon.Color, result)
 					polygon.Points = append(polygon.Points, Point{x, y})
 				}
 			}
@@ -106,23 +106,7 @@ func SubtractPolygonWWN(polygon *Polygon, result *image.RGBA) {
 		for y := minY; y <= maxY; y++ {
 			point = Point{x, y}
 			if WindingNumber(point, polygon.Vertices) != 0 {
-				SubtractPoint(x, y, polygon.ColorRGBA, result)
-			}
-		}
-	}
-}
-
-func RasterizeGroup(individual *Individual, canvas *image.RGBA) {
-	width := canvas.Bounds().Max.X
-	height := canvas.Bounds().Max.Y
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			for i := range individual.Polygons {
-				if (Point{x, y}).In(individual.Polygons[i].Rectangle) {
-					if WindingNumber(Point{x, y}, individual.Polygons[i].Vertices) != 0 {
-						DrawPoint(x, y, individual.Polygons[i].ColorRGBA, canvas)
-					}
-				}
+				SubtractPoint(x, y, polygon.Color, result)
 			}
 		}
 	}
