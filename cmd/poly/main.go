@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"runtime/pprof"
 	"strings"
 	"time"
 
@@ -19,6 +21,7 @@ var (
 	polygonCount int
 	iterations   int
 	maxImageSize int
+	cpuprofile   string
 )
 
 type flagArray []string
@@ -38,6 +41,7 @@ func init() {
 	flag.IntVar(&polygonCount, "p", 50, "number of polygons")
 	flag.IntVar(&iterations, "n", 1000, "number of iterations")
 	flag.IntVar(&maxImageSize, "r", 256, "resize large input images to this size")
+	flag.StringVar(&cpuprofile, "cpuprofile", "", "write cpu profile to file")
 }
 
 func main() {
@@ -57,6 +61,16 @@ func main() {
 	}
 	if iterations <= 0 {
 		poly.PrintDefaultsWithError("number of iterations should be > 0")
+	}
+
+	if cpuprofile != "" {
+		f, err := os.Create(cpuprofile)
+		if err != nil {
+			log.Printf("unable to create profile: %v", err)
+			return
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
 	}
 
 	inputImage, err := poly.LoadImage(inputPath)
