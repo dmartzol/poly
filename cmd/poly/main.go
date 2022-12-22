@@ -21,6 +21,7 @@ var (
 	polygonCount int
 	iterations   int
 	maxImageSize int
+	concurrency  int
 	cpuprofile   string
 )
 
@@ -41,6 +42,7 @@ func init() {
 	flag.IntVar(&polygonCount, "p", 50, "number of polygons")
 	flag.IntVar(&iterations, "n", 1000, "number of iterations")
 	flag.IntVar(&maxImageSize, "r", 256, "resize large input images to this size")
+	flag.IntVar(&concurrency, "c", 3, "number of workers to use")
 	flag.StringVar(&cpuprofile, "cpuprofile", "", "write cpu profile to file")
 }
 
@@ -95,7 +97,7 @@ func main() {
 	randomSeed := time.Now().UTC().UnixNano()
 	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 	start := time.Now()
-	scores := model.Optimize(iterations)
+	score := model.Optimize(iterations, concurrency)
 	elapsed := time.Since(start)
 
 	// logging info
@@ -103,7 +105,7 @@ func main() {
 	fmt.Printf("took %v\n", elapsed)
 	speed := int(float64(iterations) * float64(polygonCount) / elapsed.Seconds())
 	fmt.Println(speed, "polygons/s")
-	fmt.Printf("score: %v", scores[len(scores)-1])
+	fmt.Printf("score: %v", score)
 
 	// saving output
 	for _, output := range Outputs {

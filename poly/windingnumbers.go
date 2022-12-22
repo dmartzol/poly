@@ -10,7 +10,7 @@ func (point *Point) clone() Point {
 	return Point{point.X, point.Y}
 }
 
-// WindingNumber is the winding number test for a point in a polygon
+// windingNumber is the winding number test for a point in a polygon
 //      Input:   P = a point,
 //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
 //      Return:  wn = the winding number (=0 only when P is outside)

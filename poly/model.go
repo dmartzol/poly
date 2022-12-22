@@ -19,6 +19,7 @@ type Model struct {
 	Polygons                Polygons
 	Scale                   float64
 	Score                   float64
+	Iteration               int
 	BackgroundColor         Color
 	MutateVertexProbability float64
 }
@@ -49,28 +50,59 @@ func NewModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Mo
 	return &m
 }
 
-func (m *Model) Optimize(iterations int) []float64 {
-	var scores []float64
-	var successful int
+func (m *Model) mutate() Polygons {
+	polygons := m.Polygons.clone()
+	randomIndex := rand.Intn(m.NumPolygons)
+	r := rand.Float64()
+	polygons[randomIndex].mutate(r, m.Width, m.Height)
+	return polygons
+}
 
-	for i := 0; i < iterations; i++ {
-		polygons := m.Polygons.clone()
-		randomIndex := rand.Intn(m.NumPolygons)
-		r := rand.Float64()
-		polygons[randomIndex].mutate(r, m.Width, m.Height)
+func (m *Model) step(id int, jobs <-chan int, results chan<- float64) {
+	for j := range jobs {
+		polygons := m.mutate()
 		rgbaCandidate := polygonsToRGBA(polygons, m.BackgroundColor, m.Width, m.Height)
 
 		newScore := mse(m.TargetImage, rgbaCandidate)
 		if newScore < m.Score {
-			successful++
 			m.Polygons = polygons
 			m.Score = newScore
-			scores = append(scores, newScore)
+			m.Iteration = j
+			results <- newScore
+		}
+		results <- 0.0
+	}
+}
+
+func (m *Model) Optimize(iterations, concurrency int) float64 {
+	var score float64
+	var successful int
+
+	jobs := make(chan int, iterations)
+	results := make(chan float64, iterations)
+
+	for w := 1; w <= concurrency; w++ {
+		go m.step(w, jobs, results)
+	}
+
+	for i := 1; i <= iterations; i++ {
+		jobs <- i
+	}
+	close(jobs)
+
+	for a := 1; a <= iterations; a++ {
+		current := <-results
+		if current > score {
+			score = current
+		}
+		if current != 0.0 {
+			successful++
 		}
 	}
+
 	log.Printf("successful iterations: %v", successful)
 
-	return scores
+	return score
 }
 
 func polygonsToRGBA(polygons Polygons, bgColor Color, w, h int) *image.RGBA {
@@ -85,12 +117,6 @@ func polygonsToRGBA(polygons Polygons, bgColor Color, w, h int) *image.RGBA {
 		rgba.Pix[i+2] = bgColor.B
 		rgba.Pix[i+3] = bgColor.A
 	}
-
-	// rgba := individual.Polygons[individual.ChoosenPolygonIndex].subImage
-	// TODO: Implement calculating average to decide white or black Bg
-	// First subImage must be the Bg
-	// First subImage should be printed in NewIndividual
-	// setBackgroundColor(individual.BackgroundColor, rgba)
 
 	for _, polygon := range polygons {
 		rasterizePolygonWWN(polygon, rgba)
