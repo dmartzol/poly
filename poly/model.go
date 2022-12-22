@@ -39,12 +39,12 @@ func NewModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Mo
 
 	for i := 0; i < numPolygons; i++ {
 		order := rand.Intn(3) + 3
-		polygon := NewRandomPolygon(order, m.Width, m.Height)
+		polygon := newRandomPolygon(order, m.Width, m.Height)
 		m.Polygons = append(m.Polygons, polygon)
 	}
 
 	rgbaCandidate := polygonsToRGBA(m.Polygons, m.BackgroundColor, m.Width, m.Height)
-	m.Score = MSE(m.TargetImage, rgbaCandidate)
+	m.Score = mse(m.TargetImage, rgbaCandidate)
 
 	return &m
 }
@@ -54,13 +54,13 @@ func (m *Model) Optimize(iterations int) []float64 {
 	var successful int
 
 	for i := 0; i < iterations; i++ {
-		polygons := m.Polygons.Clone()
+		polygons := m.Polygons.clone()
 		randomIndex := rand.Intn(m.NumPolygons)
 		r := rand.Float64()
 		polygons[randomIndex].mutate(r, m.Width, m.Height)
 		rgbaCandidate := polygonsToRGBA(polygons, m.BackgroundColor, m.Width, m.Height)
 
-		newScore := MSE(m.TargetImage, rgbaCandidate)
+		newScore := mse(m.TargetImage, rgbaCandidate)
 		if newScore < m.Score {
 			successful++
 			m.Polygons = polygons
@@ -93,13 +93,13 @@ func polygonsToRGBA(polygons Polygons, bgColor Color, w, h int) *image.RGBA {
 	// setBackgroundColor(individual.BackgroundColor, rgba)
 
 	for _, polygon := range polygons {
-		RasterizePolygonWWN(polygon, rgba)
+		rasterizePolygonWWN(polygon, rgba)
 	}
 
 	return rgba
 }
 
-func MSE(target, candidate *image.RGBA) float64 {
+func mse(target, candidate *image.RGBA) float64 {
 	targetPixels := target.Pix
 	w, h := candidate.Bounds().Max.X, candidate.Bounds().Max.Y
 	size := w * h * 4
@@ -108,7 +108,7 @@ func MSE(target, candidate *image.RGBA) float64 {
 		if i%3 != 0 { // avoiding calculating difference for transparency pixels
 			d := absoluteDifferenceInt8(targetPixels[i], candidate.Pix[i])
 			// TODO: Write a faster Pow func
-			sum = sum + Pow(d, 2)
+			sum = sum + pow(d, 2)
 		}
 	}
 

@@ -2,8 +2,8 @@ package poly
 
 import "image"
 
-// DrawLine is the Bresenham's algorithm for painting lines efficiently
-func DrawLine(x0, y0, x1, y1 int, color Color, canvas *image.RGBA) {
+// drawLine is the Bresenham's algorithm for painting lines efficiently
+func drawLine(x0, y0, x1, y1 int, color Color, canvas *image.RGBA) {
 	var cx = x0
 	var cy = y0
 
@@ -32,7 +32,7 @@ func DrawLine(x0, y0, x1, y1 int, color Color, canvas *image.RGBA) {
 
 	var n int
 	for n = 0; n < 1000; n++ {
-		DrawPoint(cx, cy, color, canvas)
+		drawPoint(cx, cy, color, canvas)
 		if (cx == x1) && (cy == y1) {
 			return
 		}

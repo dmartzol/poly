@@ -2,7 +2,7 @@ package poly
 
 import "image"
 
-func DrawPoint(cx, cy int, color Color, canvas *image.RGBA) {
+func drawPoint(cx, cy int, color Color, canvas *image.RGBA) {
 	p := canvas.PixOffset(cx, cy)
 	var oldColor Color
 	// Not using loops for better performance
@@ -18,7 +18,7 @@ func DrawPoint(cx, cy int, color Color, canvas *image.RGBA) {
 	canvas.Pix[p+3] = newColor.A
 }
 
-func SubtractPoint(cx, cy int, color Color, canvas *image.RGBA) {
+func subtractPoint(cx, cy int, color Color, canvas *image.RGBA) {
 	p := canvas.PixOffset(cx, cy)
 	var oldColor Color
 	// Not using loops for better performance
@@ -36,7 +36,7 @@ func SubtractPoint(cx, cy int, color Color, canvas *image.RGBA) {
 
 func fillRow(y, x0, x1 int, color Color, canvas *image.RGBA) {
 	for x := x0; x < x1; x++ {
-		DrawPoint(x, y, color, canvas)
+		drawPoint(x, y, color, canvas)
 	}
 }
 

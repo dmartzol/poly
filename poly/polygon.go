@@ -12,7 +12,7 @@ type Polygon struct {
 	HasPoints bool
 }
 
-func (p Polygon) Clone() Polygon {
+func (p Polygon) clone() Polygon {
 	var polygon Polygon
 	polygon.Vertices = make([]Point, len(p.Vertices))
 	polygon.Points = make([]Point, len(p.Points))
@@ -25,16 +25,16 @@ func (p Polygon) Clone() Polygon {
 
 type Polygons []Polygon
 
-func (ps Polygons) Clone() Polygons {
+func (ps Polygons) clone() Polygons {
 	var polygons Polygons
 	for _, p := range ps {
-		c := p.Clone()
+		c := p.clone()
 		polygons = append(polygons, c)
 	}
 	return polygons
 }
 
-func NewRandomPolygon(order, maxX, maxY int) Polygon {
+func newRandomPolygon(order, maxX, maxY int) Polygon {
 	points := newRandomVertices(order, maxX, maxY)
 	polygon := Polygon{}
 	polygon.Vertices = points

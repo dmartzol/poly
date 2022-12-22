@@ -14,28 +14,7 @@ func (point *Point) clone() Point {
 //      Input:   P = a point,
 //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
 //      Return:  wn = the winding number (=0 only when P is outside)
-// func WindingNumber(P Point, V []Point) int {
-// 	wn := 0
-// 	lim := len(V) - 1
-// 	for i := 0; i < lim; i++ {
-// 		if V[i].Y <= P.Y {
-// 			if V[i+1].Y > P.Y {
-// 				if isLeft(V[i], V[i+1], P) > 0 {
-// 					wn++
-// 				}
-// 			}
-// 		} else {
-// 			if V[i+1].Y <= P.Y {
-// 				if isLeft(V[i], V[i+1], P) < 0 {
-// 					wn--
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return wn
-// }
-
-func WindingNumber(P Point, V []Point) int {
+func windingNumber(P Point, V []Point) int {
 	wn := 0
 	lim := len(V) - 1
 	for i := 0; i < lim; i++ {
@@ -79,19 +58,19 @@ func isLeft(P0, P1, P2 Point) int {
 	return (P1.X-P0.X)*(P2.Y-P0.Y) - (P2.X-P0.X)*(P1.Y-P0.Y)
 }
 
-func RasterizePolygonWWN(polygon Polygon, result *image.RGBA) {
-	minX, maxX, minY, maxY := MinMaxPoints(polygon.Vertices)
+func rasterizePolygonWWN(polygon Polygon, result *image.RGBA) {
+	minX, maxX, minY, maxY := minMaxPoints(polygon.Vertices)
 	// copy(polygon.subImage.Pix, result.Pix)
 	if polygon.HasPoints {
 		for _, point := range polygon.Points {
-			DrawPoint(point.X, point.Y, polygon.Color, result)
+			drawPoint(point.X, point.Y, polygon.Color, result)
 		}
 	} else {
 		polygon.HasPoints = true
 		for x := minX; x <= maxX; x++ {
 			for y := minY; y <= maxY; y++ {
-				if WindingNumber(Point{x, y}, polygon.Vertices) != 0 {
-					DrawPoint(x, y, polygon.Color, result)
+				if windingNumber(Point{x, y}, polygon.Vertices) != 0 {
+					drawPoint(x, y, polygon.Color, result)
 					polygon.Points = append(polygon.Points, Point{x, y})
 				}
 			}
@@ -99,20 +78,15 @@ func RasterizePolygonWWN(polygon Polygon, result *image.RGBA) {
 	}
 }
 
-func SubtractPolygonWWN(polygon *Polygon, result *image.RGBA) {
-	minX, maxX, minY, maxY := MinMaxPoints(polygon.Vertices)
+func subtractPolygonWWN(polygon *Polygon, result *image.RGBA) {
+	minX, maxX, minY, maxY := minMaxPoints(polygon.Vertices)
 	var point Point
 	for x := minX; x <= maxX; x++ {
 		for y := minY; y <= maxY; y++ {
 			point = Point{x, y}
-			if WindingNumber(point, polygon.Vertices) != 0 {
-				SubtractPoint(x, y, polygon.Color, result)
+			if windingNumber(point, polygon.Vertices) != 0 {
+				subtractPoint(x, y, polygon.Color, result)
 			}
 		}
 	}
-}
-
-// In reports whether p is in r.
-func (p Point) In(r image.Rectangle) bool {
-	return r.Min.X <= p.X && p.X < r.Max.X && r.Min.Y <= p.Y && p.Y < r.Max.Y
 }
