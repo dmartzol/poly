@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/png"
+	"log"
 	"math"
 	"math/rand"
 	"os"
@@ -50,6 +51,7 @@ func NewModel(input image.Image, numPolygons int, seed int64, bgColor Color) *Mo
 
 func (m *Model) Optimize(iterations int) []float64 {
 	var scores []float64
+	var successful int
 
 	for i := 0; i < iterations; i++ {
 		polygons := m.Polygons.Clone()
@@ -60,11 +62,13 @@ func (m *Model) Optimize(iterations int) []float64 {
 
 		newScore := MSE(m.TargetImage, rgbaCandidate)
 		if newScore < m.Score {
+			successful++
 			m.Polygons = polygons
 			m.Score = newScore
 			scores = append(scores, newScore)
 		}
 	}
+	log.Printf("successful iterations: %v", successful)
 
 	return scores
 }
