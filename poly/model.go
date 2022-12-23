@@ -70,7 +70,7 @@ func (m *Model) step(id int, jobs <-chan int, results chan<- float64) {
 			m.Iteration = j
 			results <- newScore
 		}
-		results <- 0.0
+		results <- math.Inf(1)
 	}
 }
 
@@ -92,7 +92,7 @@ func (m *Model) Optimize(iterations, concurrency int) float64 {
 
 	for a := 1; a <= iterations; a++ {
 		current := <-results
-		if current > score {
+		if current < score || a == 1 {
 			score = current
 		}
 		if current != 0.0 {
