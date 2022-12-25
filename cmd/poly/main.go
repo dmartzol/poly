@@ -55,9 +55,6 @@ func main() {
 	if len(Outputs) == 0 {
 		poly.PrintDefaultsWithError("output argument required")
 	}
-	if Outputs[0] == inputPath {
-		poly.PrintDefaultsWithError("input and output are the same file")
-	}
 	if polygonCount <= 0 {
 		poly.PrintDefaultsWithError("number of polygons should be > 0")
 	}
