@@ -103,7 +103,11 @@ func main() {
 		model = poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 
 	} else if extension == ".gob" {
-		poly.ReadGob(inputPath, model)
+		err := poly.ReadGob(inputPath, model)
+		if err != nil {
+			log.Printf("unable to read gob file: %v", err)
+			return
+		}
 	}
 
 	start := time.Now()
