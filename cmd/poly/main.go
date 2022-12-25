@@ -73,29 +73,39 @@ func main() {
 		}
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
+
 	}
 
-	inputImage, err := poly.LoadImage(inputPath)
-	if err != nil {
-		log.Printf("unable to load image: %v", err)
-		return
+	model := new(poly.Model)
+
+	extension := strings.ToLower(filepath.Ext(inputPath))
+	if extension == ".jpg" {
+		inputImage, err := poly.LoadImage(inputPath)
+		if err != nil {
+			log.Printf("unable to load image: %v", err)
+			return
+		}
+
+		// scale down input image if needed
+		size := uint(maxImageSize)
+		if size > 0 {
+			inputImage = resize.Thumbnail(size, size, inputImage, resize.Bilinear)
+		}
+
+		// Main block
+		whiteColor := poly.Color{
+			R: 255,
+			G: 255,
+			B: 255,
+			A: 255,
+		}
+		randomSeed := time.Now().UTC().UnixNano()
+		model = poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
+
+	} else if extension == ".gob" {
+		poly.ReadGob(inputPath, model)
 	}
 
-	// scale down input image if needed
-	size := uint(maxImageSize)
-	if size > 0 {
-		inputImage = resize.Thumbnail(size, size, inputImage, resize.Bilinear)
-	}
-
-	// Main block
-	whiteColor := poly.Color{
-		R: 255,
-		G: 255,
-		B: 255,
-		A: 255,
-	}
-	randomSeed := time.Now().UTC().UnixNano()
-	model := poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
 	start := time.Now()
 	score := model.Optimize(iterations, concurrency)
 	elapsed := time.Since(start)
@@ -116,13 +126,19 @@ func main() {
 			log.Printf("unrecognized file extension: %s", extension)
 			return
 		case ".svg":
-			err = poly.SaveFile(path, model.SVG())
+			err := poly.SaveFile(path, model.SVG())
 			if err != nil {
 				log.Printf("unable to save SVG file: %v", err)
 				return
 			}
+		case ".gob":
+			err := model.GOB(output)
+			if err != nil {
+				log.Printf("unable to save GOB file: %v", err)
+				return
+			}
 		case ".png":
-			err = model.PNG(output)
+			err := model.PNG(output)
 			if err != nil {
 				log.Printf("unable to save PNG file: %v", err)
 				return

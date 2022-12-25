@@ -1,6 +1,7 @@
 package poly
 
 import (
+	"encoding/gob"
 	"fmt"
 	"image"
 	"image/png"
@@ -139,6 +140,38 @@ func mse(target, candidate *image.RGBA) float64 {
 	}
 
 	return math.Sqrt(float64(sum))
+}
+
+func (m *Model) GOB(filePath string) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		return fmt.Errorf("unable to create file: %w", err)
+	}
+	defer file.Close()
+
+	encoder := gob.NewEncoder(file)
+	err = encoder.Encode(m)
+	if err != nil {
+		return fmt.Errorf("unable to encode file: %w", err)
+	}
+
+	return nil
+}
+
+func ReadGob(filePath string, object interface{}) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("unable to open file: %w", err)
+	}
+	defer file.Close()
+
+	decoder := gob.NewDecoder(file)
+	err = decoder.Decode(object)
+	if err != nil {
+		return fmt.Errorf("unable to decode file: %w", err)
+	}
+
+	return nil
 }
 
 func (m *Model) SVG() string {
