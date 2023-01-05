@@ -99,6 +99,9 @@ func (m *Model) Optimize(iterations, concurrency int) float64 {
 		if current != 0.0 {
 			successful++
 		}
+		if a%1000 == 0 {
+			log.Printf("%v %v", a, score)
+		}
 	}
 
 	log.Printf("successful iterations: %v", successful)
