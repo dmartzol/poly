@@ -83,6 +83,6 @@ func BenchmarkModel(b *testing.B) {
 	randomSeed := int64(349283)
 	model := NewModel(img, 25, randomSeed, whiteColor)
 	for n := 0; n < b.N; n++ {
-		_ = model.Optimize(5)
+		_ = model.Optimize(5, 1)
 	}
 }
