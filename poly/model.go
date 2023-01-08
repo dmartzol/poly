@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Model struct {
@@ -100,7 +101,7 @@ func (m *Model) Optimize(iterations, concurrency int) float64 {
 			successful++
 		}
 		if a%1000 == 0 {
-			log.Printf("%v %v", a, score)
+			fmt.Printf("%v,%v,%v\n", time.Now().Format(time.RFC3339), a, score)
 		}
 	}
 
