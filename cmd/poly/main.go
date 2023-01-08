@@ -74,9 +74,14 @@ func main() {
 	}
 
 	model := new(poly.Model)
-
 	extension := strings.ToLower(filepath.Ext(inputPath))
-	if extension == ".jpg" {
+	if extension == ".gob" {
+		err := poly.ReadGob(inputPath, model)
+		if err != nil {
+			log.Printf("unable to read gob file: %v", err)
+			return
+		}
+	} else {
 		inputImage, err := poly.LoadImage(inputPath)
 		if err != nil {
 			log.Printf("unable to load image: %v", err)
@@ -98,13 +103,6 @@ func main() {
 		}
 		randomSeed := time.Now().UTC().UnixNano()
 		model = poly.NewModel(inputImage, polygonCount, randomSeed, whiteColor)
-
-	} else if extension == ".gob" {
-		err := poly.ReadGob(inputPath, model)
-		if err != nil {
-			log.Printf("unable to read gob file: %v", err)
-			return
-		}
 	}
 
 	start := time.Now()
