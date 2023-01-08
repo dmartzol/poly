@@ -129,22 +129,6 @@ func polygonsToRGBA(polygons Polygons, bgColor Color, w, h int) *image.RGBA {
 	return rgba
 }
 
-func mse(target, candidate *image.RGBA) float64 {
-	targetPixels := target.Pix
-	w, h := candidate.Bounds().Max.X, candidate.Bounds().Max.Y
-	size := w * h * 4
-	sum := 0
-	for i := 0; i < size; i++ {
-		if i%3 != 0 { // avoiding calculating difference for transparency pixels
-			d := absoluteDifferenceInt8(targetPixels[i], candidate.Pix[i])
-			// TODO: Write a faster Pow func
-			sum = sum + pow(d, 2)
-		}
-	}
-
-	return math.Sqrt(float64(sum))
-}
-
 func (m *Model) GOB(filePath string) error {
 	file, err := os.Create(filePath)
 	if err != nil {
