@@ -76,7 +76,7 @@ func (m *Model) step(id int, jobs <-chan int, results chan<- float64) {
 	}
 }
 
-func (m *Model) Optimize(iterations, concurrency int) float64 {
+func (m *Model) Optimize(iterations, concurrency, logFrequency int) float64 {
 	var score float64
 	var successful int
 
@@ -100,7 +100,7 @@ func (m *Model) Optimize(iterations, concurrency int) float64 {
 		if current != 0.0 {
 			successful++
 		}
-		if a%1000 == 0 {
+		if a%logFrequency == 0 {
 			fmt.Printf("%v,%v,%v\n", time.Now().Format(time.RFC3339), a, score)
 		}
 	}

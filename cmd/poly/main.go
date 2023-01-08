@@ -22,6 +22,7 @@ var (
 	iterations   int
 	maxImageSize int
 	concurrency  int
+	logFrequency int
 	cpuprofile   string
 )
 
@@ -43,6 +44,7 @@ func init() {
 	flag.IntVar(&iterations, "n", 1000, "number of iterations")
 	flag.IntVar(&maxImageSize, "r", 256, "resize large input images to this size")
 	flag.IntVar(&concurrency, "c", 3, "number of workers to use")
+	flag.IntVar(&logFrequency, "l", 1000, "frequency of logs in number of iterations")
 	flag.StringVar(&cpuprofile, "cpuprofile", "", "write cpu profile to file")
 }
 
@@ -106,7 +108,7 @@ func main() {
 	}
 
 	start := time.Now()
-	score := model.Optimize(iterations, concurrency)
+	score := model.Optimize(iterations, concurrency, logFrequency)
 	elapsed := time.Since(start)
 
 	// logging info
