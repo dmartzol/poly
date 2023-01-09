@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"log"
 	"math"
 	"math/rand"
 	"os"
@@ -96,16 +95,14 @@ func (m *Model) Optimize(iterations, concurrency, logFrequency int) float64 {
 		current := <-results
 		if current < score || a == 1 {
 			score = current
-		}
-		if current != 0.0 {
 			successful++
 		}
 		if a%logFrequency == 0 {
-			fmt.Printf("%v,%v,%v\n", time.Now().Format(time.RFC3339), a, score)
+			fmt.Printf("%v,%v,%v,%v\n", time.Now().Format(time.RFC3339), a, score, successful)
 		}
 	}
 
-	log.Printf("successful iterations: %v", successful)
+	fmt.Printf("successful iterations: %v\n", successful)
 
 	return score
 }
